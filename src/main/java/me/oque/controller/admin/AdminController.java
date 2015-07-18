@@ -1,7 +1,7 @@
 package me.oque.controller.admin;
 
-import me.oque.repo.UserRepository;
-import me.oque.entity.User;
+import me.oque.dao.SelectionDao;
+import me.oque.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,26 +11,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 /**
  * Created by Dmitry Smorzhok on 11.07.15.
  */
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
-	@Autowired
-	private UserRepository userRepository;
+
+    @Autowired
+    private SelectionDao selectionDao;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listUsers(ModelMap model) {
-		model.addAttribute("user", new User());
-		model.addAttribute("users", userRepository.findAll());
+		model.addAttribute("user", new UserInfo());
+        List<UserInfo> userList = selectionDao.getAll(UserInfo.class);
+		model.addAttribute("users", userList);
 		return "users";
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String addUser(@ModelAttribute("user") User user, BindingResult result) {
+	public String addUser(@ModelAttribute("user") UserInfo user, BindingResult result) {
 
-		userRepository.save(user);
+        selectionDao.save(user);
 
 		return "redirect:/admin";
 	}
@@ -38,7 +42,7 @@ public class AdminController {
 	@RequestMapping(value = "/delete/{userId}")
 	public String deleteUser(@PathVariable("userId") Long userId) {
 
-		userRepository.delete(userRepository.findOne(userId));
+		selectionDao.deleteById(UserInfo.class, userId);
 
 		return "redirect:/admin";
 	}

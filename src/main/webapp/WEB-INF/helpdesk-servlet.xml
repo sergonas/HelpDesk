@@ -15,18 +15,40 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <jpa:repositories base-package="me.oque.repo"/>
+    <!-- database connection configuration -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="defaultPersistenceUnit"/>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+                <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
+                <prop key="hibernate.connection.charSet">UTF-8</prop>
+            </props>
+        </property>
+        <property name="packagesToScan" value="me.oque.entity"/>
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <bean class="java.net.URI" id="dbUrl">
+        <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
+    </bean>
 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="url" value="#{ 'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath() }"/>
+        <property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
+        <property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
+    </bean>
+
+    <!-- i18n resources and interceptors -->
     <bean id="messageSource"
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basename" value="classpath:messages"/>
@@ -47,5 +69,8 @@
     <mvc:annotation-driven />
 
     <mvc:resources mapping="/resources/**" location="/resources/" />
+
+    <!-- service classes -->
+    <bean id="selectionDao" class="me.oque.dao.SelectionDaoImpl"/>
 
 </beans>
