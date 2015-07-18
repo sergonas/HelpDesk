@@ -27,6 +27,7 @@ public class SelectionDaoImpl implements SelectionDao {
         session.beginTransaction();
         session.save(object);
         session.getTransaction().commit();
+        session.close();
     }
 
     @Override
@@ -35,6 +36,7 @@ public class SelectionDaoImpl implements SelectionDao {
         session.beginTransaction();
         session.delete(object);
         session.getTransaction().commit();
+        session.close();
     }
 
     @Override
@@ -46,6 +48,7 @@ public class SelectionDaoImpl implements SelectionDao {
         T object = (T) criteria.getExecutableCriteria(session).uniqueResult();
         session.delete(object);
         session.getTransaction().commit();
+        session.close();
     }
 
     @Override
@@ -55,6 +58,7 @@ public class SelectionDaoImpl implements SelectionDao {
         session.beginTransaction();
         List<T> list = criteria.getExecutableCriteria(session).list();
         session.getTransaction().commit();
+        session.close();
         return list;
     }
 }
