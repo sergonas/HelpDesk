@@ -5,16 +5,11 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="utf-8">
     <title>
         <spring:message code="mainPage.title" text="Help Desk | главная"/>
     </title>
 
-    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/dist/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <jsp:include page="templates/head.jsp"/>
 </head>
 
 <body>
@@ -59,14 +54,14 @@
                 <div class="btn-group" role="group">
                     <a href="<c:url value="/login"/>">
                         <button type="button" class="btn btn-default navbar-btn">
-                            <spring:message code="mainPage.login" text="Войти"/>
+                            <spring:message code="common.nav.login" text="Войти"/>
                         </button>
                     </a>
                 </div>
                 <div class="btn-group" role="group">
                     <a href="<c:url value="/signup"/>">
                         <button type="button" class="btn btn-success navbar-btn">
-                            <spring:message code="mainPage.signUp" text="Регистрация"/>
+                            <spring:message code="common.nav.signUp" text="Регистрация"/>
                         </button>
                     </a>
                 </div>
