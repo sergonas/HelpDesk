@@ -46,31 +46,49 @@
                 </li>
             </ul>
 
-            <c:choose>
-                <c:when test="${user != null}">
-                    <p class="navbar-text navbar-right">
-                        Logged in as ${user.firstName}
-                    </p>
-                </c:when>
-                <c:otherwise>
-                    <div class="btn-toolbar navbar-right" role="toolbar">
-                        <div class="btn-group" role="group">
-                            <a href="<c:url value="/login"/>">
-                                <button type="button" class="btn btn-default navbar-btn">
-                                    <spring:message code="common.nav.login" text="Войти"/>
-                                </button>
-                            </a>
-                        </div>
-                        <div class="btn-group" role="group">
-                            <a href="<c:url value="/signup"/>">
-                                <button type="button" class="btn btn-success navbar-btn">
-                                    <spring:message code="common.nav.signUp" text="Регистрация"/>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </c:otherwise>
-            </c:choose>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <c:choose>
+                        <c:when test="${user != null}">
+                            <p class="navbar-text navbar-right">
+                                Logged in as ${user.firstName}
+                            </p>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="btn-toolbar" role="toolbar">
+                                <div class="btn-group" role="group">
+                                    <a href="<c:url value="/login"/>">
+                                        <button type="button" class="btn btn-default navbar-btn">
+                                            <spring:message code="common.nav.login" text="Войти"/>
+                                        </button>
+                                    </a>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <a href="<c:url value="/signup"/>">
+                                        <button type="button" class="btn btn-success navbar-btn">
+                                            <spring:message code="common.nav.signUp" text="Регистрация"/>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </li>
+                <li>
+                    <a href="?lang=ru">
+                        <img src="<c:url value="/resources/images/flag_russia.png"/>" alt="Русский" height="20"/>
+                    </a>
+                </li>
+                <li>
+                    <a href="?lang=en">
+                        <img src="<c:url value="/resources/images/flag_us.png"/>" alt="English" height="20"/>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="navbar-right">
+            </div>
+
         </div>
     </div>
 </nav>
