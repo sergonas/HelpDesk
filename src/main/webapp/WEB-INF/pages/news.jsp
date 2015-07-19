@@ -37,11 +37,13 @@
             </c:forEach>
             <nav>
                 <ul class="pagination">
-                    <li>
-                        <a href="${currentIndex - 1}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
+                    <c:if test="${currentIndex != 1}">
+                        <li>
+                            <a href="${currentIndex - 1}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    </c:if>
                     <c:forEach var="i" begin="1" end="${pages}">
                         <c:url var="pageUrl" value="${i}"/>
                         <c:choose>
@@ -53,11 +55,13 @@
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                    <li>
-                        <a href="${currentIndex + 1}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
+                    <c:if test="${currentIndex != pages}">
+                        <li>
+                            <a href="${currentIndex + 1}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </c:if>
                 </ul>
             </nav>
         </c:when>
