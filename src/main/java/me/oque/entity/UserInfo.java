@@ -1,10 +1,14 @@
 package me.oque.entity;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 
 /**
+ * Entity for user representation
+ *
  * Created by Dmitry Smorzhok on 10.07.15.
  */
 @Entity

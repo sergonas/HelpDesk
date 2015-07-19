@@ -61,4 +61,13 @@ public class SelectionDaoImpl implements SelectionDao {
         session.close();
         return list;
     }
+
+    @Override
+    public <T extends DataObject> T getObjectByQuery(DetachedCriteria query) {
+        Session session = sessionFactory.openSession();
+        T object = (T) query.getExecutableCriteria(session).uniqueResult();
+        session.getTransaction().commit();
+        session.close();
+        return object;
+    }
 }

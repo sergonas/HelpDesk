@@ -1,7 +1,3 @@
-<%--
-  Author: Dmitry Smorzhok
-  Date: 10.07.15
---%>
 <!doctype html>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
@@ -27,6 +23,14 @@
             <form:input path="lastName" class="form-control" placeholder="Last Name"/>
         </div>
         <div class="form-group">
+            <form:label path="nickname">Nick Name:</form:label>
+            <form:input path="nickname" class="form-control" placeholder="Nick Name"/>
+        </div>
+        <div class="form-group">
+            <form:label path="passwordHash">Password:</form:label>
+            <form:password path="passwordHash" class="form-control" placeholder="Password"/>
+        </div>
+        <div class="form-group">
             <form:label path="email">Email:</form:label>
             <form:input path="email" class="form-control" placeholder="Email"/>
         </div>
@@ -40,6 +44,7 @@
             <tr>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Nickname</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -48,6 +53,7 @@
                 <tr>
                     <td>${user.lastName}, ${user.firstName}</td>
                     <td>${user.email}</td>
+                    <td>${user.nickname}</td>
                     <td>
                         <form:form action="/admin/delete/${user.id}" method="post"><input type="submit"
                                                                                    class="btn btn-danger btn-mini"

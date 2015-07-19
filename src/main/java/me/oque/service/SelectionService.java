@@ -1,16 +1,13 @@
-package me.oque.dao;
+package me.oque.service;
 
 import me.oque.entity.DataObject;
-import org.hibernate.criterion.DetachedCriteria;
 
 import java.util.List;
 
 /**
- * Common interface for dao implementations
- *
- * Created by Dmitry Smorzhok on 18.07.15.
+ * Created by Dmitry Smorzhok on 19.07.15.
  */
-public interface SelectionDao {
+public interface SelectionService {
 
     /**
      * saves given object in database
@@ -37,12 +34,5 @@ public interface SelectionDao {
      * @return all objects of given type T from db
      */
     public <T extends DataObject> List<T> getAll(Class<T> clazz);
-
-    /**
-     * get object of type T from database by query
-     * @param query - DetachedCriteria query
-     * @return object by given qury
-     */
-    public <T extends DataObject> T getObjectByQuery(DetachedCriteria query);
 
 }

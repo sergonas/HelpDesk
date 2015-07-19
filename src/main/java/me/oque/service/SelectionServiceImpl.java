@@ -1,0 +1,38 @@
+package me.oque.service;
+
+import me.oque.dao.SelectionDao;
+import me.oque.entity.DataObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Created by Dmitry Smorzhok on 19.07.15.
+ */
+@Service("selectionService")
+public class SelectionServiceImpl implements SelectionService {
+
+    @Autowired
+    protected SelectionDao selectionDao;
+
+    @Override
+    public <T extends DataObject> void save(T object) {
+        selectionDao.save(object);
+    }
+
+    @Override
+    public <T extends DataObject> void delete(T object) {
+        selectionDao.delete(object);
+    }
+
+    @Override
+    public <T extends DataObject> void deleteById(Class<T> clazz, Long id) {
+        selectionDao.deleteById(clazz, id);
+    }
+
+    @Override
+    public <T extends DataObject> List<T> getAll(Class<T> clazz) {
+        return selectionDao.getAll(clazz);
+    }
+}
