@@ -1,9 +1,15 @@
 package me.oque.controller.main;
 
+import me.oque.entity.News;
+import me.oque.service.SelectionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  * Controller for main part
@@ -14,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/")
 public class MainPageController {
 
+    @Autowired
+    private SelectionService selectionService;
+
     @RequestMapping(method = RequestMethod.GET)
     public String mainPage(ModelMap model) {
         model.put("name", "placeHolder");
@@ -22,6 +31,16 @@ public class MainPageController {
 
     @RequestMapping(value = "/news", method = RequestMethod.GET)
     public String getNews(ModelMap model) {
+        return "redirect:/news/page/1";
+    }
+
+    @RequestMapping(value = "/news/page/{id}", method = RequestMethod.GET)
+    public String getNewsPage(ModelMap model, @PathVariable("id") int id) {
+        model.put("currentIndex", id);
+        long totalRecords = selectionService.countAll(News.class);
+        model.put("pages", Math.ceil(totalRecords / 10.0));
+        List<News> newsList = selectionService.listObjectByPage(News.class, id, 10);
+        model.put("newsList", newsList);
         return "news";
     }
 

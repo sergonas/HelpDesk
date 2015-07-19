@@ -35,4 +35,14 @@ public class SelectionServiceImpl implements SelectionService {
     public <T extends DataObject> List<T> getAll(Class<T> clazz) {
         return selectionDao.getAll(clazz);
     }
+
+    @Override
+    public <T extends DataObject> List<T> listObjectByPage(Class<T> clazz, int page, int pageSize) {
+        return selectionDao.listObjectByPage(clazz, page, pageSize);
+    }
+
+    @Override
+    public <T extends DataObject> long countAll(Class<T> clazz) {
+        return selectionDao.countAll(clazz);
+    }
 }

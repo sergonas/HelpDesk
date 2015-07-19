@@ -4,6 +4,7 @@ import me.oque.entity.DataObject;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -69,5 +70,32 @@ public class SelectionDaoImpl implements SelectionDao {
         session.getTransaction().commit();
         session.close();
         return object;
+    }
+
+    @Override
+    public <T extends DataObject> List<T> listObjectByPage(Class<T> clazz, int page, int pageSize) {
+        Session session = sessionFactory.openSession();
+        DetachedCriteria criteria = DetachedCriteria.forClass(clazz);
+        session.beginTransaction();
+        List<T> list = criteria.getExecutableCriteria(session)
+                .setFirstResult((page - 1) * pageSize)
+                .setMaxResults(pageSize)
+                .list();
+        session.getTransaction().commit();
+        session.close();
+        return list;
+    }
+
+    @Override
+    public <T extends DataObject> long countAll(Class<T> clazz) {
+        Session session = sessionFactory.openSession();
+        DetachedCriteria criteria = DetachedCriteria.forClass(clazz);
+        session.beginTransaction();
+        Long size = (Long) criteria.getExecutableCriteria(session)
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
+        session.getTransaction().commit();
+        session.close();
+        return size;
     }
 }
