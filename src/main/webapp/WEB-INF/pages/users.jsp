@@ -53,7 +53,7 @@
                 <tr>
                     <td>${user.lastName}, ${user.firstName}</td>
                     <td>${user.email}</td>
-                    <td>${user.nickname}</td>
+                    <td>${user.username}</td>
                     <td>
                         <form:form action="/admin/delete/${user.id}" method="post"><input type="submit"
                                                                                    class="btn btn-danger btn-mini"

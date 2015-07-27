@@ -2,7 +2,6 @@ package me.oque.controller.admin;
 
 import me.oque.entity.UserInfo;
 import me.oque.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    @Autowired
+    @Inject
     private UserService userService;
 
 	@RequestMapping(method = RequestMethod.GET)

@@ -2,40 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-
-    <bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
-        <constructor-arg name="strength" value="11"/>
-    </bean>
-
-    <security:authentication-manager>
-        <security:authentication-provider>
-            <security:jdbc-user-service data-source-ref="dataSource"/>
-            <security:password-encoder ref="encoder"/>
-        </security:authentication-provider>
-    </security:authentication-manager>
-
-    <security:http pattern="/resources/**" security="none"/>
-    <security:http pattern="/login*" security="none"/>
-
-    <security:http auto-config='true'>
-        <security:intercept-url pattern="/**" access="hasRole('USER')"/>
-        <security:form-login login-page="/login"/>
-    </security:http>
-
-    <bean class="java.net.URI" id="dbUrl">
-        <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
-    </bean>
-
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="url"
-                  value="#{ 'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath() }"/>
-        <property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
-        <property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
-    </bean>
 
     <!-- i18n resources and interceptors -->
     <bean id="messageSource"
@@ -49,27 +21,41 @@
         <property name="cookieMaxAge" value="100000"/>
     </bean>
 
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="defaultPU"/>
+    </bean>
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <!-- database connection configuration -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <context:component-scan base-package="me.oque.controller"/>
+    <context:component-scan base-package="me.oque.service"/>
+    <context:component-scan base-package="me.oque.dao"/>
+
+    <bean id="detailService" class="me.oque.service.MyUserDetailService"/>
+
+    <bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg name="strength" value="11"/>
     </bean>
 
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
-                <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
-                <prop key="hibernate.connection.charSet">UTF-8</prop>
-            </props>
-        </property>
-        <property name="packagesToScan" value="me.oque.entity"/>
-    </bean>
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="detailService">
+            <security:password-encoder ref="encoder"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <security:http pattern="/resources/**" security="none"/>
+    <security:http pattern="/login*" security="none"/>
+
+    <security:http auto-config='true'>
+        <security:intercept-url pattern="/**" access="hasRole('USER')"/>
+        <security:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
+        <security:form-login login-page="/login"/>
+    </security:http>
 </beans>

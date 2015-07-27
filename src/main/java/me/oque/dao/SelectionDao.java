@@ -1,8 +1,8 @@
 package me.oque.dao;
 
 import me.oque.entity.DataObject;
-import org.hibernate.criterion.DetachedCriteria;
 
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public interface SelectionDao {
      * @param query - DetachedCriteria query
      * @return object by given qury
      */
-    <T extends DataObject> T getObjectByQuery(DetachedCriteria query);
+    <T extends DataObject> T getObjectByQuery(Class<T> clazz, String query);
 
     /**
      * gets objects from db for pagination

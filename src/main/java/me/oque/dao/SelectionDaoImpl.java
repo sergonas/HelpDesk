@@ -1,15 +1,15 @@
 package me.oque.dao;
 
 import me.oque.entity.DataObject;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -19,83 +19,71 @@ import java.util.List;
 @Repository
 public class SelectionDaoImpl implements SelectionDao {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public <T extends DataObject> void save(T object) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(object);
-        session.getTransaction().commit();
-        session.close();
+        entityManager.persist(object);
     }
 
     @Override
     public <T extends DataObject> void delete(T object) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.delete(object);
-        session.getTransaction().commit();
-        session.close();
+        entityManager.remove(object);
     }
 
     @Override
     public <T extends DataObject> void deleteById(Class<T> clazz, Long id) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        DetachedCriteria criteria = DetachedCriteria.forClass(clazz)
-                .add(Restrictions.eq("id", id));
-        T object = (T) criteria.getExecutableCriteria(session).uniqueResult();
-        session.delete(object);
-        session.getTransaction().commit();
-        session.close();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(clazz);
+        Root<T> c = query.from(clazz);
+        ParameterExpression<Long> p = cb.parameter(Long.class);
+        query.select(c).where(cb.equal(c.get("id"), p));
+
+        TypedQuery<T> entityManagerQuery = entityManager.createQuery(query);
+        entityManagerQuery.setParameter(p, id);
+        List<T> result = entityManagerQuery.getResultList();
+        result.forEach(entityManager::remove);
     }
 
     @Override
     public <T extends DataObject> List<T> getAll(Class<T> clazz) {
-        Session session = sessionFactory.openSession();
-        DetachedCriteria criteria = DetachedCriteria.forClass(clazz);
-        session.beginTransaction();
-        List<T> list = criteria.getExecutableCriteria(session).list();
-        session.getTransaction().commit();
-        session.close();
-        return list;
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(clazz);
+        Root<T> c = query.from(clazz);
+        query.select(c);
+
+        TypedQuery<T> entityManagerQuery = entityManager.createQuery(query);
+        return entityManagerQuery.getResultList();
     }
 
     @Override
-    public <T extends DataObject> T getObjectByQuery(DetachedCriteria query) {
-        Session session = sessionFactory.openSession();
-        T object = (T) query.getExecutableCriteria(session).uniqueResult();
-        session.getTransaction().commit();
-        session.close();
-        return object;
+    public <T extends DataObject> T getObjectByQuery(Class<T> clazz, String query) {
+        TypedQuery<T> entityManagerQuery = entityManager.createQuery(query, clazz);
+        return entityManagerQuery.getSingleResult();
     }
 
     @Override
     public <T extends DataObject> List<T> listObjectByPage(Class<T> clazz, int page, int pageSize) {
-        Session session = sessionFactory.openSession();
-        DetachedCriteria criteria = DetachedCriteria.forClass(clazz);
-        session.beginTransaction();
-        List<T> list = criteria.getExecutableCriteria(session)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
-                .list();
-        session.getTransaction().commit();
-        session.close();
-        return list;
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(clazz);
+        Root<T> c = query.from(clazz);
+        query.select(c);
+
+        TypedQuery<T> entityManagerQuery = entityManager.createQuery(query);
+        entityManagerQuery.setFirstResult((page - 1) * pageSize);
+        entityManagerQuery.setMaxResults(pageSize);
+        return entityManagerQuery.getResultList();
     }
 
     @Override
     public <T extends DataObject> long countAll(Class<T> clazz) {
-        Session session = sessionFactory.openSession();
-        DetachedCriteria criteria = DetachedCriteria.forClass(clazz);
-        session.beginTransaction();
-        Long size = (Long) criteria.getExecutableCriteria(session)
-                .setProjection(Projections.rowCount())
-                .uniqueResult();
-        session.getTransaction().commit();
-        session.close();
-        return size;
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        query.select(cb.count(query.from(clazz)));
+
+        TypedQuery<Long> entityManagerQuery = entityManager.createQuery(query);
+        return entityManagerQuery.getSingleResult();
     }
 }

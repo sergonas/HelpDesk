@@ -2,9 +2,9 @@ package me.oque.service;
 
 import me.oque.dao.SelectionDao;
 import me.oque.entity.DataObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -13,7 +13,7 @@ import java.util.List;
 @Service("selectionService")
 public class SelectionServiceImpl implements SelectionService {
 
-    @Autowired
+    @Inject
     protected SelectionDao selectionDao;
 
     @Override

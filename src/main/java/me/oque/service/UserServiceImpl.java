@@ -1,8 +1,6 @@
 package me.oque.service;
 
 import me.oque.entity.UserInfo;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sun.misc.BASE64Decoder;
@@ -24,6 +22,7 @@ import java.util.Arrays;
 public class UserServiceImpl extends SelectionServiceImpl implements UserService {
 
     private static final int ITERATION_NUMBER = 1000;
+
 
     @Override
     public void saveUser(UserInfo user) {
@@ -64,9 +63,7 @@ public class UserServiceImpl extends SelectionServiceImpl implements UserService
             username = "";
             password = "";
         }
-        DetachedCriteria query = DetachedCriteria.forClass(UserInfo.class)
-                .add(Restrictions.eq("nickname", username));
-        UserInfo user = selectionDao.getObjectByQuery(query);
+        UserInfo user = selectionDao.getObjectByQuery(UserInfo.class, "from UserInfo u where u.username = " + username);
         String digest, salt;
         if (user != null) {
             digest = user.getPasswordHash();
