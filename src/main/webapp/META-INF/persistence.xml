@@ -1,7 +1,7 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-             version="2.0">
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
     <persistence-unit name="defaultPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
@@ -10,6 +10,7 @@
         <class>me.oque.entity.News</class>
 
         <properties>
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
             <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>

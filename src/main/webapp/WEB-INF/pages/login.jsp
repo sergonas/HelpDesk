@@ -18,7 +18,21 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>News</h1>
+        <h1>Login</h1>
+    </div>
+    <div>
+        <form action="<c:url value="/login"/>" method="post">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="j_username">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Пароль</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль" name="j_password">
+            </div>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <button type="submit" class="btn btn-default">Войти</button>
+        </form>
     </div>
 </div>
 </body>

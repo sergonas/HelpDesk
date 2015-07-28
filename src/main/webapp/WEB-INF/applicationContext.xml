@@ -9,8 +9,11 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    <context:annotation-config/>
+
+    <bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManagerName" value="java:jboss/TransactionManager"/>
+        <property name="userTransactionName" value="java:jboss/UserTransaction"/>
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
@@ -20,12 +23,17 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <!-- database connection configuration -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven transaction-manager="txManager"/>
+    <tx:jta-transaction-manager/>
 
     <context:component-scan base-package="me.oque.service"/>
     <context:component-scan base-package="me.oque.dao"/>
 
     <bean id="detailService" class="me.oque.service.MyUserDetailService"/>
+
+    <bean id="daoDetailService" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="detailService"/>
+    </bean>
 
     <bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg name="strength" value="11"/>
@@ -33,16 +41,17 @@
 
     <security:authentication-manager>
         <security:authentication-provider user-service-ref="detailService">
-            <security:password-encoder ref="encoder"/>
+            <security:password-encoder hash="bcrypt"/>
         </security:authentication-provider>
     </security:authentication-manager>
 
     <security:http pattern="/resources/**" security="none"/>
-    <security:http pattern="/login*" security="none"/>
 
     <security:http auto-config='true'>
+        <security:intercept-url pattern="/login*" access="permitAll()"/>
         <security:intercept-url pattern="/**" access="hasRole('USER')"/>
         <security:intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
-        <security:form-login login-page="/login"/>
+        <security:form-login login-page="/login" login-processing-url="/login" authentication-failure-url="/login?error"/>
+        <security:csrf/>
     </security:http>
 </beans>
