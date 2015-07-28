@@ -9,18 +9,6 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- i18n resources and interceptors -->
-    <bean id="messageSource"
-          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="classpath:messages"/>
-        <property name="defaultEncoding" value="UTF-8"/>
-    </bean>
-
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-        <property name="cookieName" value="language"/>
-        <property name="cookieMaxAge" value="100000"/>
-    </bean>
-
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
@@ -34,7 +22,6 @@
     <!-- database connection configuration -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <context:component-scan base-package="me.oque.controller"/>
     <context:component-scan base-package="me.oque.service"/>
     <context:component-scan base-package="me.oque.dao"/>
 
