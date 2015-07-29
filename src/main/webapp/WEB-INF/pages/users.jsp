@@ -23,8 +23,8 @@
             <form:input path="lastName" class="form-control" placeholder="Last Name"/>
         </div>
         <div class="form-group">
-            <form:label path="nickname">Nick Name:</form:label>
-            <form:input path="nickname" class="form-control" placeholder="Nick Name"/>
+            <form:label path="username">Nick Name:</form:label>
+            <form:input path="username" class="form-control" placeholder="Nick Name"/>
         </div>
         <div class="form-group">
             <form:label path="passwordHash">Password:</form:label>

@@ -8,6 +8,7 @@
     <name>HelpDesk</name>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>4.1.7.RELEASE</spring.version>
         <spring.security.version>4.0.2.RELEASE</spring.security.version>
         <hibernate.version>4.3.10.Final</hibernate.version>

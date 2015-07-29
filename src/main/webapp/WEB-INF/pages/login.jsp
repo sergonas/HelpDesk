@@ -23,12 +23,12 @@
     <div>
         <form action="<c:url value="/login"/>" method="post">
             <div class="form-group">
-                <label for="exampleInputEmail1">Email</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="j_username">
+                <label for="username">Username</label>
+                <input id="username" class="form-control" name="username"/>
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">Пароль</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль" name="j_password">
+                <label for="pass">Pass</label>
+                <input id="pass" type="password" class="form-control" name="password"/>
             </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <button type="submit" class="btn btn-default">Войти</button>

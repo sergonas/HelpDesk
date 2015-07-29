@@ -1,9 +1,13 @@
 package me.oque.controller.main;
 
 import me.oque.entity.News;
+import me.oque.entity.UserInfo;
 import me.oque.service.SelectionService;
+import me.oque.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +26,9 @@ public class MainPageController {
 
     @Inject
     private SelectionService selectionService;
+
+    @Inject
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String mainPage(ModelMap model) {
@@ -71,7 +78,14 @@ public class MainPageController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signUp(ModelMap model) {
+        model.addAttribute("user", new UserInfo());
         return "signup";
     }
 
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    public String signUpProcessor(@ModelAttribute("user") UserInfo user, BindingResult result) {
+        userService.saveUser(user, user.getPasswordHash()); //FIXME
+
+        return "redirect:/login";
+    }
 }

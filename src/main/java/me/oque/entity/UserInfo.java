@@ -25,8 +25,6 @@ public class UserInfo implements DataObject {
 
     private String passwordHash;
 
-    private String salt;
-
     private String firstName;
 
     private String lastName;
@@ -57,14 +55,6 @@ public class UserInfo implements DataObject {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     public String getFirstName() {

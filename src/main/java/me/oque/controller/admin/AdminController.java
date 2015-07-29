@@ -35,8 +35,7 @@ public class AdminController {
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addUser(@ModelAttribute("user") UserInfo user, BindingResult result) {
-
-        userService.saveUser(user);
+        userService.saveUser(user, user.getPasswordHash()); //FIXME
 
 		return "redirect:/admin";
 	}

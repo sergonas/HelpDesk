@@ -11,14 +11,5 @@ public interface UserService extends SelectionService {
      * Saves new user to database
      * @param user - user object
      */
-    void saveUser(UserInfo user);
-
-    /**
-     * Tries to authenticate user with given credentials
-     * @param username username to authenticate
-     * @param password password for given username
-     * @return true if authentication succeeded, false otherwise
-     */
-    boolean authenticateUser(String username, String password);
-
+    void saveUser(UserInfo user, String password);
 }
